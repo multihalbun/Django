@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from .models import Post, Comment
-from .forms import PostForm, CommentForm
+from .models import Post, Comment, HashTag
+from .forms import PostForm, CommentForm, TagForm
 from django.urls import reverse_lazy, reverse
 
 # Create your views here.
@@ -92,28 +92,74 @@ class Delete(DeleteView):
 
 
 class DetailView(View):
-    def get(self, request, post_id):
+    def get(self, request, pk):
         # list -> object 상세 페이지 -> 상세 페이지 하나의 내용
         # pk 값을 왔다갔다, 하나의 인자
 
         # 데이터베이스 방문
         # 해당 글
-        post = Post.objects.get(pk=post_id)
+        # 장고 ORM (pk: 무조건 pk로 작성해야한다.)
+        post = Post.objects.get(pk=pk)
         # 댓글
-        
+        comments = Comment.objects.filter(post=post)
+        # 해시태그
+        hashtags = HashTag.objects.filter(post=post)
+        # 댓글 Form
+        comment_form = CommentForm()
+
+        # 태그 Form
+        hashtag_form = TagForm()
+
+
+        context = {
+            'post': post,
+            'comments': comments,
+            'hashtags': hashtags,
+            'comment_form': comment_form,
+            'hashtag_form': hashtag_form,
+        }
+        return render(request, 'blog/post_detail.html', context)
 
 
 ### Comment
 class CommentWrite(View):
     # def get(self, request):
     #     pass
-    def post(self, request, post_id):
+    def post(self, request, pk):
         form = CommentForm(request.POST)
         if form.is_valid():
-            # 사용자에게 댓글 내용을 받아왐
+            # 사용자에게 댓글 내용을 받아옴
             content = form.cleaned_data['content']
+            writer = form.cleaned_data['writer']
             # 해당 아이디에 해당하는 글 불러옴
-            post = Post.objects.get(pk=post_id)
+            post = Post.objects.get(pk=pk)
             # 댓글 객체 생성
-            comment = Comment.objects.create(post=post, content=content)
-            return redirect('blog:detail', pk=post_id)
+            comment = Comment.objects.create(post=post, content=content, writer=writer)
+            return redirect('blog:detail', pk=pk)
+
+
+class CommentDelete(View):
+    def post(self, request, pk):
+        comment = Comment.objects.get(pk=pk)
+        post_id = comment.post.id
+        comment.delete()
+        return redirect('blog:detail', pk=post_id)
+
+
+### Tag
+class TagWrite(View):
+    def post(self, request, pk):
+        form = TagForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            post = Post.objects.get(pk=pk)
+            hashtag = HashTag.objects.create(post=post, name=name)
+            return redirect('blog:detail', pk=pk)
+
+
+class TagDelete(View):
+    def post(self, request, pk):
+        tag = HashTag.objects.get(pk=pk)
+        post_id = tag.post.id
+        tag.delete()
+        return redirect('blog:detail', pk=post_id)
