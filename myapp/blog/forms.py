@@ -25,7 +25,7 @@ class CommentForm(forms.ModelForm):
         }
 
 
-class TagForm(forms.ModelForm):
+class HashTagForm(forms.ModelForm):
 
     class Meta:
         model = HashTag

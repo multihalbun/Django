@@ -24,7 +24,8 @@ class Comment(models.Model):
 
 
 class HashTag(models.Model):
-    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=10)
 
     def __str__(self):

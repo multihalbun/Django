@@ -61,10 +61,12 @@
         {% for hashtag in hashtags %}
             <li>
                 {{ hashtag.name }}<br>
-                <form action="{% url 'blog:tag-delete' pk=hashtag.pk %}" method="post">
+                {% if request.user == hashTag.writer %}
+                <form action="{% url 'blog:tag-delete' hashTag_id=hashTag.pk %}" method="post">
                     {% csrf_token %}
-                    <input type="submit" value="삭제" class="btn btn-outline-success">
+                    <input type="submit" value="X">
                 </form>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
