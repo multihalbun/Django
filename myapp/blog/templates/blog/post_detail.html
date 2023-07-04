@@ -50,27 +50,27 @@
 
 {# 태그 작성 화면#}
 <h3>해시태그</h3>
-<form action="{% url 'blog:tag-write' pk=post.pk %}" method="post">
-    {% csrf_token %}
-    {{ hashtag_form.name }}
-    <input type="submit" value="태그 작성">
-</form>
-{% if hashtags %}
+    <form action="{% url 'blog:tag-write' pk=post.pk %}" method="post">
+        {% csrf_token %}
+        {{ hashtag_form.name }}
+        <input type="submit" value="태그 작성">
+    </form>
+    {% if hashtags %}
     <ul>
-        {# for 문 #}
         {% for hashtag in hashtags %}
-            <li>
-                {{ hashtag.name }}<br>
-                {% if request.user == hashTag.writer %}
-                <form action="{% url 'blog:tag-delete' hashTag_id=hashTag.pk %}" method="post">
+        <li>
+            {{ hashtag }}
+            {% if hashtag.writer == request.user %}
+                <form action="{% url 'blog:tag-delete' pk=hashtag.pk %}" method="post">
                     {% csrf_token %}
-                    <input type="submit" value="X">
+                    <input type="submit" value="X" class='btn'>
                 </form>
-                {% endif %}
-            </li>
+            {% endif %}
+        </li>
         {% endfor %}
     </ul>
-{% else %}
-    <p>태그가 없습니다.</p>
-{% endif %}
+    {% else %}
+    <br>
+    <p>해시태그가 없습니다.</p>
+    {% endif %}
 {% endblock %}
