@@ -1,9 +1,8 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     <p>블로그 글 수정 화면</p>
-    
-    {% if form %}
+    {% if form.errors %}
         {% include 'blog/form_error.html' %}
     {% else %}
         <form action="{% url 'blog:edit' pk=post.pk %}" method="post">

@@ -12,18 +12,21 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
-# Auth usser
+# Auth user
 AUTH_USER_MODEL = 'user.User'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# Login URL
+LOGIN_URL = '/user/login'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-55@n)6aurcp(wl@0^i^92(urglijh86b#!-r$zr3(9u)nwq*e0'
+SECRET_KEY = 'django-insecure-9@o$2xraddb1(&2zw%pzgj^fyjd(vixj0#&^u4(=kj**+^^x56'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog',
+    'blog', # 내가 만든 앱을 추가
     'user',
 ]
 
@@ -59,7 +62,7 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [BASE_DIR / "templates"], # myapp/templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -110,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ko-kr'  # 한국어
 
-TIME_ZONE = 'Asia/Seoul'  # 한국 시간
+TIME_ZONE = 'Asia/Seoul' # 한국 시간
 
 USE_I18N = True
 

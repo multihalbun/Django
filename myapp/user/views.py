@@ -14,42 +14,44 @@ from .forms import RegisterForm, LoginForm
 ### Registration
 class Registration(View):
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('blog:list')
         # 회원가입 페이지
         # 정보를 입력할 폼을 보여주어야 한다.
         form = RegisterForm()
         context = {
-            'form': form
+            'form': form,
+            'title': 'User'
         }
         return render(request, 'user/user_register.html', context)
-
+    
     def post(self, request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return redirect('blog:list')
+            return redirect('user:login')
 
 
 ### Login
 class Login(View):
     def get(self, request):
-        ### 추가한 내용
         if request.user.is_authenticated:
             return redirect('blog:list')
         
         form = LoginForm()
         context = {
-            'form': form
+            'form': form,
+            'title': 'User'
         }
         return render(request, 'user/user_login.html', context)
         
     def post(self, request):
-        ### 추가한 내용
         if request.user.is_authenticated:
             return redirect('blog:list')
         
-        form = LoginForm(request.POST)
+        form = LoginForm(request, request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
+            email = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(username=email, password=password) # True, False
             
@@ -57,7 +59,7 @@ class Login(View):
                 login(request, user)
                 return redirect('blog:list')
             
-            form.add_error(None, '아이디가 없습니다.')
+        form.add_error(None, '아이디가 없습니다.')
         
         context = {
             'form': form
